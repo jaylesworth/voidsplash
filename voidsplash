@@ -1,0 +1,27 @@
+#!/bin/sh
+SPEED=0.1
+TARGETSV=nodm
+
+#builtin echo in dash does not support espace sequence, but external does
+/bin/echo -n -e '\e[?25l' > /dev/tty1
+
+parrot () {
+    while true
+        do for x in $*
+            do echo "$x"
+        done
+    done
+}
+
+main () {
+parrot /etc/fbsplash/* | while read img
+do
+    { sleep $SPEED ; echo 'q' ;} | fbv -cike "$img"
+
+    if sv status "$TARGETSV" | grep -q '^run'
+    then exit 0
+    fi
+done
+}
+
+main &
