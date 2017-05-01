@@ -21,3 +21,11 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# ---
+#
+# Images in void-theme/ are based on /usr/share/void-artwork/splash.png in
+# voidlinux installation.
+#
+# These files are Copyright (c) 2008-2016 Juan Romero Pardines and contributors
+# All rights reserved under the same terms as above.
