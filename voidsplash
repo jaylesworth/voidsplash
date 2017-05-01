@@ -40,7 +40,7 @@ parrot () {
 }
 
 main () {
-parrot /etc/fbsplash/* | while read img
+parrot /etc/voidsplash/* | while read img
 do
     { sleep $SPEED ; echo 'q' ;} | fbv -cike "$img"
 
