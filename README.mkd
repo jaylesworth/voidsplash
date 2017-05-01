@@ -1,0 +1,79 @@
+#`voidsplash`: simple animated boot splash for runit
+
+`voidsplash` provides a simple animated splash screen. Designed with
+[voidlinux](http://voidlinux.eu/) in mind, voidsplash should work anywhere runit
+is used as PID 1 and with minimal modification with any other init system.
+`voidsplash` does not require any modification to the kernel or the initramfs.
+
+`voidsplash` displays invidual images on a framebuffer device during the boot
+process.
+
+##Dependencies
+
+`voidsplash` requires a POSIX compatible shell (tested with `dash`), a working
+framebuffer device and `fbv` (an image viewer for the framebuffer). 
+
+On voidlinux:
+
+    # xbps-install -S fbv
+
+Ensure that your framebuffer is working by running `fbv` on a virtual console
+with an image of your choice: (`fbv` should support png, jpeg and bmp depending
+on compile time options)
+
+    # fbv -cike image.png
+
+Press `q` to exit `fbv`.
+
+##Installation
+
+Copy `voidsplash` to `/bin` (alternatively, `voidsplash` can be installed
+anywhere but should be on the root partition so that it can be accessed before
+disks are mounted). Make sure that it is executable.
+
+`voidsplash` should be executed as early in the boot process as possible. At the
+beginning of `/etc/runit/1`:
+
+    #!/bin/sh
+    /bin/voidsplash
+
+Create the directory `/etc/voidsplash/`. This will contain the frames to display
+while the system is booting.
+
+##Configuration
+
+voidsplash can be configured by means of shell variables inside
+`voidsplash`. Current options are:
+
+- `SPEED` sets the time, in seconds, to show each frame. This is an argument to
+  `sleep`---fractional values may be used
+
+- `TARGETSV` is the name of a runit service that voidsplash waits for. Once this
+  service is running, voidsplash will exit. **If this service does not exist or
+  is not started at boot, voidsplash will never exit**. If you wish to use
+  voidsplash without runit, you will need to modify the program to ensure it
+  exits.
+
+Place individual frames in `/etc/voidsplash`. It is recommended that files are
+named sequentially (for example, void-0.png void-1.png void-2.png …). `fbv` will
+scale images to the size of the display without changing the aspect ratio. If
+you do not want black bars make sure that the images have the same aspect ratio
+as the monitor.
+
+If you have an animated gif you wish to use, ImageMagick can be used to create
+individual frames:
+
+    $ convert void.gif -coalesce void.png
+
+will create `void-0.png void-1.png …` with individual frames from `void.gif`.
+
+##Hiding boot messages
+
+Boot messages will get garbled up with `voidsplash`. This can be fixed by
+sending these messages to a different virtual console. Add to boot options:
+
+    console=tty2
+
+To send the boot messages to the second virtual console (if using grub, add to
+`GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` then run `grub-mkconfig -o
+/boot/grub/grub.cfg`).
